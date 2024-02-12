@@ -6,7 +6,6 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-import { log } from "console";
 const __dirname = import.meta.dirname;
 
 const app = express();
