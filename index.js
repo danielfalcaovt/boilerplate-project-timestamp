@@ -6,6 +6,7 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
+import { log } from "console";
 const __dirname = import.meta.dirname;
 
 const app = express();
@@ -22,29 +23,32 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/*",(req,res)=>{
+app.get("/api/:date?",(req,res)=>{
   const url = req.params;
-  if (url[0].length > 10){
+  if (url.date.length > 10){
     const futureDate = new Date();
-    futureDate.setTime(url[0]);
+    futureDate.setTime(url.date);
     console.log(futureDate.toUTCString());
-    res.json({"unix":Date.parse(futureDate),'utc':futureDate.toUTCString()});
+    res.json({"unix":Date.parse(futureDate),'utc':futureDate.toUTCString()})
   }else{
-    console.log('here');
     const options = {
       weekday:'short',
       year:'numeric',
       month:'long',
       day:'numeric'
     };
-    console.log(url[0]);
-    const data = new Date(`${url[0]}`).toUTCString();
+    console.log(url[url.date]);
+    const data = new Date(`${url.date}`).toUTCString();
+    if (data === "Invalid Date") {
+      res.json({ error : "Invalid Date" });
+    }else{
     res.json({
-      'unix':Date.parse(url[0]),
+      'unix':Date.parse(url.date),
       "utc":data
     });
-  }
+  }}
 });
+
 
 // listen for requests :)
 var listener = app.listen(3000, function () {
